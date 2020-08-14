@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    #map {
+        margin: 50px;
+        height: 700px;
+    }
+</style> <!-- <head> -->
+{% endblock style %}
+
+{% block site_header %}
+<h1>Map</h1> <!-- <body> -->
+{% endblock site_header%}
+
+{% block body_extra %}
+<div id="map"></div>
+<!--
+    <div style="display:none">
+        <img src="{% static 'map/CrocMarker_45.png' %}" alt="Croc Marker" id="crocMark" height="40" width="40">
+    </div>
+    var crocMark= document.getElementById("crocMark").src;
+    -->
+{% endblock body_extra %}
+
+{% block scripts %}
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4W3F7XGMllb6c2LXgidFteMwYlJT42QU&callback=initMap" type="text/javascript"></script>
+
+<!-- FIREBASE SCRIPTS START -->
+<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-app.js"></script>
+<script>
+    var firebaseConfig = {
+        //api key here
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    // Get a reference to the storage service, which is used to create references in the storage bucket
+    var storage = firebase.storage();
+    var storageRef = storage.ref();
+    storage.Ref.child('E3rMfRyxKxTjRmeQpQZxisg1ebj1/CrocMarker_45.png').getDownloadURL().then(function(url) {
+        var crocMark = document.createElement("img");
+        crocMark.src = url;
+    }).catch(function(error) {
+        switch (error.code) {
+            case 'storage/object-not-found':
+                break;
+            case 'storage/unauthorized':
+                break;
+            case 'storage/unknown':
+                break;
+        }
+    });
+</script>
+<!-- FIREBASE SCRIPTS END -->
+
+<script>
+    // Map Initilaizer
+    google.maps.event.addDomListener(window, 'load', initMap);
+
+    function initMap() {
+        // can also use new google.maps.LatLng(32.735083,-117.148493)
+        var location = {
+            lat: 32.735083,
+            lng: -117.148493
+        };
+        var map_options = { //most of these are listed to show availability. Some are set to their default values
+            zoom: 14,
+            center: location,
+            mapTypeId: 'roadmap', //roadmap by default
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: true,
+            streetViewControl: false,
+            rotateControl: false, // need 45 degree imagery which is available with sat and hybrid
+            fullscreenControl: true,
+            fullscreenControlOptions: {
+                position: google.maps.ControlPosition.LEFT_TOP
+            },
+            styles: [
+
+                {
+                    elementType: 'geometry',
+                    stylers: [{
+                        color: '#242f3e'
+                    }]
+                },
+                {
+                    elementType: 'labels.text.stroke',
+                    stylers: [{
+                        color: '#242f3e'
+                    }]
+                },
+                {
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#746855'
+                    }]
+                },
+                {
+                    featureType: 'administrative.locality',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#d59563'
+                    }]
+                },
+                {
+                    featureType: 'poi.attraction',
+                    elementType: 'labels',
+                    stylers: [{
+                        visibility: 'off'
+                    }]
+                },
+                {
+                    featureType: 'poi.business',
+                    elementType: 'labels',
+                    stylers: [{
+                        color: '#d59563'
+                    }, {
+                        visibility: 'off'
+                    }]
+                },
+                {
+                    featureType: 'poi.place_of_worship',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#d59563'
+                    }, {
+                        visibility: 'off'
+                    }]
+                },
+                {
+                    featureType: 'poi.park',
+                    elementType: 'geometry',
+                    stylers: [{
+                        color: '#263c3f'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'poi.park',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#6b9a76'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'road',
+                    elementType: 'geometry',
+                    stylers: [{
+                        color: '#38414e'
+                    }, {
+                        visibility: 'on'
+                    }, ]
+                },
+                {
+                    featureType: 'road',
+                    elementType: 'geometry.stroke',
+                    stylers: [{
+                        color: '#212a37'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'road',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#9ca5b3'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'road.highway',
+                    elementType: 'geometry',
+                    stylers: [{
+                        color: '#746855'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'road.highway',
+                    elementType: 'geometry.stroke',
+                    stylers: [{
+                        color: '#1f2835'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'road.highway',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#f3d19c'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'transit',
+                    elementType: 'all',
+                    stylers: [{
+                        color: '#2f3948'
+                    }, {
+                        visibility: 'off'
+                    }]
+                },
+                {
+                    featureType: 'water',
+                    elementType: 'geometry',
+                    stylers: [{
+                        color: '#17263c'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'water',
+                    elementType: 'labels.text.fill',
+                    stylers: [{
+                        color: '#515c6d'
+                    }, {
+                        visibility: 'on'
+                    }]
+                },
+                {
+                    featureType: 'water',
+                    elementType: 'labels.text.stroke',
+                    stylers: [{
+                        color: '#17263c'
+                    }, {
+                        visibility: 'on'
+                    }]
+                }
+            ]
+        };
+
+        //var crocMark= "gs://roadreaderandroid.appspot.com/E3rMfRyxKxTjRmeQpQZxisg1ebj1/CrocMarker_45.png";
+
+        // Have to put markers below map init
+        var map = new google.maps.Map(document.getElementById('map'),
+            map_options);
+
+        var locations = [
+            [32.718784, -117.129886],
+            [32.737431, -117.129821],
+            [32.742774, -117.139005],
+            [32.732594, -117.136258],
+            [32.725229, -117.161664],
+            [32.7355, -117.18]
+        ];
+        for (var i = 0; i < locations.length; i++) {
+            var location = locations[i];
+            var sdMarker = new google.maps.Marker({
+                position: {
+                    lat: location[0],
+                    lng: location[1]
+                },
+                map: map,
+                icon: crocMark
+            });
+        }
+        /*
+                    var sdMarker=new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: crocMark
+                });
+                    */
+    }
+</script>
+
+{% endblock scripts %}
+<!-- <body> -->
+-->

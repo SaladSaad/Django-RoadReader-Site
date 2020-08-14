@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block site_header %}
+    <h1>Extra Information</h1>
+{% endblock site_header %}
+
+{% block scripts%}
+
+<!-- FIREBASE SCRIPTS START -->
+<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-app.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDLfi3jSz6cMNiMOYY-nzyuFQ8hoYWs76I",
+        authDomain: "roadreaderandroid.firebaseapp.com",
+        databaseURL: "https://roadreaderandroid.firebaseio.com",
+        projectId: "roadreaderandroid",
+        storageBucket: "roadreaderandroid.appspot.com",
+        messagingSenderId: "87118424386",
+        appId: "1:87118424386:web:a8f1f8fb88cba81d"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    // Get a reference to the storage service, which is used to create references in the storage bucket
+    var storage = firebase.storage();
+    var storageRef = storage.ref();
+    storage.Ref.child('E3rMfRyxKxTjRmeQpQZxisg1ebj1/CrocMarker_45.png').getDownloadURL().then(function(url) {
+        var crocMark = url;
+    }).catch(function(error) {
+        switch (error.code) {
+            case 'storage/object-not-found':
+                break;
+            case 'storage/unauthorized':
+                break;
+            case 'storage/unknown':
+                break;
+        }
+    });
+</script>
+
+{% endblock scripts %}
